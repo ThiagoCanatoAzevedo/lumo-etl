@@ -1,30 +1,32 @@
-import os
-import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from app.crawler.downloader import download_pdf
+from typing import List
+import os, requests
 
-BASE_URL = "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enade/provas-e-gabaritos/2025"
-DOWNLOAD_DIR = "data/pdfs"
+def find_all_pdfs(year: int) -> List[str]:
+    base_url = (
+        "https://www.gov.br/inep/pt-br/areas-de-atuacao/"
+        "avaliacao-e-exames-educacionais/enade/"
+        f"provas-e-gabaritos/{year}"
+    )
 
-def find_first_pdf():
+    DOWNLOAD_DIR = f"data/pdfs/{year}"
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-    response = requests.get(BASE_URL)
+    response = requests.get(base_url, timeout=15)
+    response.raise_for_status()
+
     soup = BeautifulSoup(response.text, "html.parser")
 
-    for link in soup.find_all("a"):
-        href = link.get("href")
-        if not href:
-            continue
+    downloaded_files = []
 
-        full_url = urljoin(BASE_URL, href)
+    for link in soup.select('a[href$=".pdf"]'):
+        full_url = urljoin(base_url, link["href"])
+        filename = full_url.split("/")[-1]
+        file_path = os.path.join(DOWNLOAD_DIR, filename)
 
-        if full_url.lower().endswith(".pdf"):
-            filename = full_url.split("/")[-1]
-            file_path = os.path.join(DOWNLOAD_DIR, filename)
+        download_pdf(full_url, file_path)
+        downloaded_files.append(file_path)
 
-            download_pdf(full_url, file_path)
-            return file_path
-
-    return "Nenhum PDF encontrado"
+    return downloaded_files
