@@ -1,7 +1,7 @@
 IGNORE_TERMS = ["ampliada", "super", "ledor"]
 ACCEPT_TERMS = ["pv", "gb"]
 
-def should_process(item: dict) -> bool:
+def filter_downloadable_pdfs(item: dict) -> bool:
     name = item["filename"]
 
     if any(term in name for term in IGNORE_TERMS):

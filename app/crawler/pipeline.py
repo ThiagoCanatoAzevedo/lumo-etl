@@ -1,9 +1,9 @@
-import os
 from app.state import etl_stop_event
 from app.crawler.discover import discover_pdfs
-from app.crawler.filter import should_process
-from app.crawler.downloader import download_temp
+from app.crawler.filter import filter_downloadable_pdfs
+from app.crawler.downloader import download_pdfs
 from app.extractor.cleaner import clean_pdf
+import os
 
 
 def run_pipeline(year: int) -> dict:
@@ -16,10 +16,10 @@ def run_pipeline(year: int) -> dict:
         if etl_stop_event.is_set():
             break
 
-        if not should_process(item):
+        if not filter_downloadable_pdfs(item):
             continue
 
-        pdf_path = download_temp(item["url"])
+        pdf_path = download_pdfs(item["url"])
 
         try:
             if etl_stop_event.is_set():
