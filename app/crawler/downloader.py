@@ -1,33 +1,20 @@
-import os
-import requests
+from pathlib import Path
+import requests, uuid
 
-IGNORAR_TERMOS = [
-    "ampliada",
-    "super_ampliada",
-    "super ampliada",
-    "ledor"
-]
+TMP_DIR = Path("data/tmp")
 
-TERMOS_VALIDOS = [
-    "pv",
-    "gb"
-]
+def download_temp(url: str) -> Path:
+    TMP_DIR.mkdir(parents=True, exist_ok=True)
 
-def download_pdf(url: str, path: str) -> bool:
-    nome = os.path.basename(url).lower()
+    filename = f"{uuid.uuid4()}.pdf"
+    path = TMP_DIR / filename
 
-    if any(termo in nome for termo in IGNORAR_TERMOS):
-        return False
+    with requests.get(url, stream=True, timeout=30) as r:
+        r.raise_for_status()
 
-    if not any(termo in nome for termo in TERMOS_VALIDOS):
-        return False
+        with open(path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
 
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-
-    response = requests.get(url, timeout=20)
-    response.raise_for_status()
-
-    with open(path, "wb") as f:
-        f.write(response.content)
-
-    return True
+    return path

@@ -1,16 +1,37 @@
-from fastapi import APIRouter
-from app.crawler.discover import find_all_pdfs
+# uvicorn app.main:app --reload
+
+from fastapi import APIRouter, HTTPException
+from app.crawler.discover import discover_pdfs
+from app.crawler.pipeline import run_pipeline
+from app.state import etl_stop_event
+import os
 
 router = APIRouter()
 
-@router.post("/extract/{year}")
-def start_etl(year: int):
-    pdf_paths = find_all_pdfs(year)
+
+@router.post("/run/{year}")
+def run_etl(year: int):
+    result = run_pipeline(year)
     return {
         "message": "ETL executado com sucesso",
-        "pdfs_baixados": pdf_paths
+        "result": result
     }
-    
-    
 
-# uvicorn app.main:app --reload
+
+@router.post("/stop")
+def stop_etl():
+    etl_stop_event.set()
+    return {"message": "Sinal de parada enviado"}
+
+
+@router.get("/discover/{year}")
+def discover(year: int):
+    try:
+        items = discover_pdfs(year)
+        return {
+            "year": year,
+            "total_encontrados": len(items),
+            "arquivos": items
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
