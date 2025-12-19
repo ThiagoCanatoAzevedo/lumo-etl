@@ -2,37 +2,45 @@
 
 from fastapi import APIRouter, HTTPException
 from app.crawler.discover import discover_pdfs
-from app.crawler.pipeline import run_pipeline
+from app.pipeline import run_pipeline
 from app.state import etl_stop_event
-
 
 router = APIRouter()
 
-# start etl pipeline
-@router.post("/run/{year}")
+
+# start complete enade etl
+@router.post("/start/{year}")
 def run_etl(year: int):
-    result = run_pipeline(year)
-    return {
-        "message": "ETL started successfully",
-        "result": result
-    }
+    try:
+        if etl_stop_event.is_set():
+            etl_stop_event.clear()
+
+        result = run_pipeline(year)
+
+        return {
+            "status": "completed" if not result["stopped"] else "stopped",
+            "result": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# stop etl pipeline
+# stop all etl - using Event
 @router.post("/stop")
 def stop_etl():
     etl_stop_event.set()
-    return {"message": "Sent a stop signal"}
+    return {"message": "Stop signal sent"}
 
 
-# return all pdfs found in determined year
+# discover pdfs downloadable - only for analysis
 @router.get("/discover/{year}")
 def discover(year: int):
     try:
         items = discover_pdfs(year)
         return {
             "year": year,
-            "total_founded": len(items),
+            "total_found": len(items),
             "files": items
         }
     except Exception as e:
