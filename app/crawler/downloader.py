@@ -6,7 +6,6 @@ import requests
 
 def download_pdfs(url: str) -> Path:
     settings.TMP_DIR.mkdir(parents=True, exist_ok=True)
-    
     parsed_url = urlparse(url)
     filename = unquote(Path(parsed_url.path).name)
     

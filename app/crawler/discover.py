@@ -1,7 +1,7 @@
-import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from app.core.settings import settings 
+import requests
 
 
 def discover_pdfs(year: int) -> list[dict]:
@@ -15,7 +15,6 @@ def discover_pdfs(year: int) -> list[dict]:
     for link in soup.select('a[href$=".pdf"]'):
         url = urljoin(base_url, link["href"])
         filename = url.split("/")[-1].lower()
-
         results.append({
             "year": year,
             "url": url,
