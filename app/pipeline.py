@@ -3,6 +3,7 @@ from app.state import etl_stop_event
 from app.crawler.discover import discover_pdfs
 from app.crawler.filter import filter_downloadable_pdfs
 from app.crawler.downloader import download_pdfs
+
 from app.extractor.classifier import classify_pdf
 from app.extractor.reader import read_pdfs
 from app.extractor.test_parser import test_parser

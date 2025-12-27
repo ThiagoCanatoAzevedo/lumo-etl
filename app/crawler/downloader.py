@@ -1,12 +1,11 @@
 from pathlib import Path
-import requests
 from urllib.parse import urlparse, unquote
+from app.core.settings import settings
+import requests
 
-
-TMP_DIR = Path("data/tmp")
 
 def download_pdfs(url: str) -> Path:
-    TMP_DIR.mkdir(parents=True, exist_ok=True)
+    settings.TMP_DIR.mkdir(parents=True, exist_ok=True)
     
     parsed_url = urlparse(url)
     filename = unquote(Path(parsed_url.path).name)
@@ -14,7 +13,7 @@ def download_pdfs(url: str) -> Path:
     if not filename.endswith('.pdf'):
         filename += '.pdf'
     
-    path = TMP_DIR / filename
+    path = settings.TMP_DIR / filename
     
     with requests.get(url, stream=True, timeout=30) as r:
         r.raise_for_status()
