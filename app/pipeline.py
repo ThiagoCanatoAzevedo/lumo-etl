@@ -5,10 +5,10 @@ from app.crawler.discover import discover_pdfs
 from app.crawler.filter import filter_downloadable_pdfs
 from app.crawler.downloader import download_pdfs
 
-from app.extractor.classifier import classify_pdfs
-from app.extractor.reader import read_pdfs
-from app.extractor.test_parser import test_parser
-from app.extractor.solution_parser import solution_parser
+from app.crawler.classifier import classify_pdfs
+from app.crawler.reader import read_pdfs
+from app.crawler.test_parser import test_parser
+from app.crawler.solution_parser import solution_parser
 
 
 def process_test(text: str, meta: dict):
