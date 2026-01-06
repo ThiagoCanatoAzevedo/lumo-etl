@@ -1,4 +1,5 @@
 from pathlib import Path
+from app.core.settings import settings
 import fitz, os
 
 
@@ -11,7 +12,7 @@ def extract_images_pdfs(pdf_path, min_width=100, min_height=100):
             continue
         
         data = pdf.extract_image(img[0])        
-        final_path = os.path.join("/data/tmp/images/", f"{test_name}_{question_number}.webp")
+        final_path = os.path.join(f"{settings.TMP_DIR}", f"{test_name}_{question_number}.webp")
         open(final_path, "wb").write(data["image"])
         
     return True
