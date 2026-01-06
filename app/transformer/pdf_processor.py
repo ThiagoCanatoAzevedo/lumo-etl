@@ -9,7 +9,7 @@ def get_metadata_pdf(pdf_path: str, year_exam:int):
     
     def return_course_exam(extracted_text: str):    
         ignore = {'INSTRUÇÕES', 'ENADE', 'EXAME NACIONAL', 'MINISTÉRIO', 'NOVEMBRO', 
-                'OUTUBRO', 'DEZEMBRO', 'VALIDINEP', 'LEIA COM ATENÇÃO', 'SINAES'}
+                'OUTUBRO', 'DEZEMBRO', 'VALIDINEP', 'LEIA COM ATENÇÃO', 'SINAES', '*'}
 
         return next((l for l in map(str.strip, extracted_text.split('\n')) 
             if l and l.isupper() and any(len(w) >= 4 for w in l.split()) 
@@ -37,6 +37,7 @@ def create_filtered_pdf(pdf_path: str, metadata):
         if (re.search(patterns.FIND_ALTERNATIVES, extracted_text)and not re.search(patterns.FIND_TRASH_TEXT, extracted_text)):
             new_doc.insert_pdf(doc, from_page=i, to_page=i)
 
-    new_doc.save(Path(f"{settings.TMP_DIR}/{year_exam}_{couse_exam}.pdf"))
+    new_doc.save(Path(f"{settings.TMP_DIR}/filtered_{year_exam}_{couse_exam}.pdf"))
     new_doc.close()
     doc.close()
+    return f"{settings.TMP_DIR}/filtered_{year_exam}_{couse_exam}.pdf"

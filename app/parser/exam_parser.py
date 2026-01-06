@@ -17,4 +17,9 @@ import re
 #     return {'body': cleaned_text.strip(), 'alternatives': {}}
 
 def exam_parser(cleaned_text:str):
+
+    
+    # course_exam = metadata.get("course_exam").upper()
+    # print(cleaned_text)
+    # print(course_exam)
     pass
