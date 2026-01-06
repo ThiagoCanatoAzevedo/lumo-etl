@@ -6,10 +6,6 @@ class Settings():
     TMP_DIR: str = Path("data/tmp")
     STORAGE_DIR: str = Path("data/storage")
     
-
-class Constants():
-    IGNORE_TERMS: list = ["ampliada", "super", "ledor"]
-    ACCEPT_TERMS: list = ["pv", "gb"]
     
 class Patterns():
     FIND_SEQUENCE_ALTERNATIVES: str = [r'\n\s*A\s+[A-Za-z]', r'(\n|^)\s*A\s+[^\n]+[\.\n]\s*B\s+']
@@ -20,5 +16,4 @@ class Patterns():
     
     
 settings = Settings()
-constants = Constants()
 patterns = Patterns()
