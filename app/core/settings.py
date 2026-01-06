@@ -12,11 +12,11 @@ class Constants():
     ACCEPT_TERMS: list = ["pv", "gb"]
     
 class Patterns():
-    QUESTION: str = re.compile(r"QUESTÃO\s+\d+", re.IGNORECASE)
-    LAST_ALTERNATIVE: str = re.compile(r"^\s*[Ⓔ⊙●]?\s*E[\s\)]", re.MULTILINE)
-    DISCURSIVE_QUESTION: str = re.compile(r"(QUESTÃO\s+DISCURSIVA\s+\d+)", re.IGNORECASE)
-    # DISCURSIVA_REGEX = re.compile(r"(elabore|redija|discorra|texto dissertativo|resposta discursiva|padrão de resposta)", re.IGNORECASE) -- possible one
-    PERCEPTION_QUESTION: str = re.compile(r"questionário\s+de\s+percepção", re.IGNORECASE)
+    FIND_SEQUENCE_ALTERNATIVES: str = [r'\n\s*A\s+[A-Za-z]', r'(\n|^)\s*A\s+[^\n]+[\.\n]\s*B\s+']
+    EXTRACT_ALTERNATIVES: str = r'\b([A-E])\s+(.*?)(?=\s+[A-E]\s+|$)'
+    
+    FIND_QUESTION: str = r"QUESTÃO\s+\d+",
+    FIND_LAST_ALTERNATIVE: str = r"^\s*[Ⓔ⊙●]?\s*E[\s\)]"
     
     
 settings = Settings()
